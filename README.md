@@ -1,2 +1,2 @@
-# project-name
-A description
+Orion Database MySQL
+Java MySQL functionality
