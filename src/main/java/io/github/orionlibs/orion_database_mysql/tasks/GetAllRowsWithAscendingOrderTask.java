@@ -2,7 +2,7 @@ package io.github.orionlibs.orion_database_mysql.tasks;
 
 import io.github.orionlibs.orion_assert.Assert;
 import io.github.orionlibs.orion_database.OrionModel;
-import io.github.orionlibs.orion_database_mysql.Database;
+import io.github.orionlibs.orion_database_mysql.MySQL;
 import io.github.orionlibs.orion_database_mysql.sql.mysql.MySQLQueryBuilderService;
 import java.util.List;
 
@@ -16,6 +16,6 @@ public class GetAllRowsWithAscendingOrderTask
         mySQLQuery.selectEverythingFromTable(databaseName + databaseTable);
         mySQLQuery.ascendingOrderByColumn(ascendingOrderForColumn);
         String SQL = mySQLQuery.semicolon().toString();
-        return Database.runSQL(SQL, emptyModel);
+        return MySQL.runSQL(SQL, emptyModel);
     }
 }

@@ -19,17 +19,10 @@ import io.github.orionlibs.orion_database_mysql.tasks.UpdateModelsTask;
 import io.github.orionlibs.orion_pagination.Pagination;
 import java.util.List;
 
-public class Database
+public class MySQL
 {
     public static OrionSQLDatabaseAccessObject connection;
     public static String databaseName;
-    public static String usersDatabaseName;
-    public static String logsDatabaseName;
-    public static String paymentsDatabaseName;
-    public static String marketingDatabaseName;
-    public static String messagesDatabaseName;
-    public static String configurationDatabaseName;
-    public static String geodataDatabaseName;
 
 
     public static long getSumOfColumn(String columnName, String databaseTable, String databaseName)

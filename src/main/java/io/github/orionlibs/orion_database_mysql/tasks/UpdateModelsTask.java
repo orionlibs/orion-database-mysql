@@ -1,11 +1,12 @@
 package io.github.orionlibs.orion_database_mysql.tasks;
 
-import com.orion.core.security.DataSecurityService;
-import com.orion.core.security.NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException;
 import io.github.orionlibs.orion_assert.Assert;
 import io.github.orionlibs.orion_database.OrionModel;
-import io.github.orionlibs.orion_database_mysql.Database;
+import io.github.orionlibs.orion_database_mysql.IgnoreForORM;
+import io.github.orionlibs.orion_database_mysql.MySQL;
 import io.github.orionlibs.orion_database_mysql.sql.mysql.MySQLQueryBuilderService;
+import io.github.orionlibs.orion_reflection.variable.access.ReflectionInstanceVariablesAccessService;
+import io.github.orionlibs.orion_reflection.variable.retrieval.ReflectionInstanceVariablesRetrievalService;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,25 +26,16 @@ public class UpdateModelsTask
             MySQLQueryBuilderService mySQLQuery = new MySQLQueryBuilderService();
             for(OrionModel model : models)
             {
-                OrionModel modelCopy = model.getCopy();
-                try
-                {
-                    DataSecurityService.encryptObject(modelCopy);
-                }
-                catch(NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException e)
-                {
-                    //
-                }
                 mySQLQuery.reset();
                 mySQLQuery.updateTable(databaseName + databaseTable);
                 mySQLQuery.set();
                 mySQLQuery.columnsEqualsQuestionMark(columnsToUpdate);
                 mySQLQuery.whereColumnsEqualsQuestionMarkConjunction(columnsForCondition);
-                mySQLQuery.buildParametersArray(modelCopy);
+                mySQLQuery.buildParametersArray(model);
                 SQL += mySQLQuery.semicolon().toString();
                 parameters.add(mySQLQuery.getParameters());
             }
-            return Database.runSQLBatch(SQL, parameters, allowSequentialExecution);
+            return MySQL.runSQLBatch(SQL, parameters, allowSequentialExecution);
         }
         return null;
     }
@@ -61,20 +53,11 @@ public class UpdateModelsTask
             MySQLQueryBuilderService mySQLQuery = new MySQLQueryBuilderService();
             for(OrionModel model : models)
             {
-                OrionModel modelCopy = model.getCopy();
-                try
-                {
-                    DataSecurityService.encryptObject(modelCopy);
-                }
-                catch(NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException e)
-                {
-                    //
-                }
                 mySQLQuery.reset();
                 mySQLQuery.updateTable(databaseName + databaseTable);
                 mySQLQuery.set();
                 List<String> columnsToUpdate = new ArrayList<>();
-                List<Field> privateInstanceVariables = ReflectionInstanceVariablesRetrievalService.getAllPrivateInstanceVariables(modelCopy);
+                List<Field> privateInstanceVariables = ReflectionInstanceVariablesRetrievalService.getAllPrivateInstanceVariables(model);
                 for(Field field : privateInstanceVariables)
                 {
                     ReflectionInstanceVariablesAccessService.makeInstanceVariableAccessible(field);
@@ -86,11 +69,11 @@ public class UpdateModelsTask
                 }
                 mySQLQuery.columnsEqualsQuestionMark(columnsToUpdate);
                 mySQLQuery.whereColumnsEqualsQuestionMarkConjunction(columnsForCondition);
-                mySQLQuery.buildParametersArray(modelCopy);
+                mySQLQuery.buildParametersArray(model);
                 SQL += mySQLQuery.semicolon().toString();
                 parameters.add(mySQLQuery.getParameters());
             }
-            return Database.runSQLBatch(SQL, parameters, allowSequentialExecution);
+            return MySQL.runSQLBatch(SQL, parameters, allowSequentialExecution);
         }
         return null;
     }

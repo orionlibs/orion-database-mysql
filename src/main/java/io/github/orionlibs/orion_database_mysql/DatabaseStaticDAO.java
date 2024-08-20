@@ -15,7 +15,6 @@ public class DatabaseStaticDAO
         }
         catch(DataAccessException e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
         }
     }

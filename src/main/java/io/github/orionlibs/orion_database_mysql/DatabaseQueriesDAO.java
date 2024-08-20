@@ -1,8 +1,5 @@
 package io.github.orionlibs.orion_database_mysql;
 
-import com.orion.core.security.DataSecurityService;
-import com.orion.core.security.NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,51 +27,21 @@ public class DatabaseQueriesDAO
             {
                 if(parameters != null)
                 {
-                    List<Object> results = JDBC.query(SQLCode, new OrionBeanPropertyRowMapper<Object>((Class<Object>)modelToUse.getClass()), parameters);
-                    return decryptTheResults(results);
+                    return JDBC.query(SQLCode, new OrionBeanPropertyRowMapper<Object>((Class<Object>)modelToUse.getClass()), parameters);
                 }
                 else
                 {
-                    List<Object> results = JDBC.query(SQLCode, new OrionBeanPropertyRowMapper<Object>((Class<Object>)modelToUse.getClass()));
-                    return decryptTheResults(results);
+                    return JDBC.query(SQLCode, new OrionBeanPropertyRowMapper<Object>((Class<Object>)modelToUse.getClass()));
                 }
             }
         }
         catch(DataAccessException e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
         }
         catch(Exception e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
-        }
-    }
-
-
-    private List<Object> decryptTheResults(List<Object> results)
-    {
-        if(results != null)
-        {
-            List<Object> decryptedResults = new ArrayList<>(results.size());
-            for(Object result : results)
-            {
-                try
-                {
-                    DataSecurityService.decryptObject(result);
-                }
-                catch(NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException e)
-                {
-                    //
-                }
-                decryptedResults.add(result);
-            }
-            return decryptedResults;
-        }
-        else
-        {
-            return null;
         }
     }
 }

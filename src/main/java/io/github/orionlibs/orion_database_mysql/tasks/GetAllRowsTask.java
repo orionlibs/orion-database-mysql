@@ -2,7 +2,7 @@ package io.github.orionlibs.orion_database_mysql.tasks;
 
 import io.github.orionlibs.orion_assert.Assert;
 import io.github.orionlibs.orion_database.OrionModel;
-import io.github.orionlibs.orion_database_mysql.Database;
+import io.github.orionlibs.orion_database_mysql.MySQL;
 import io.github.orionlibs.orion_database_mysql.sql.mysql.MySQLQueryBuilderService;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class GetAllRowsTask
         MySQLQueryBuilderService mySQLQuery = new MySQLQueryBuilderService();
         mySQLQuery.selectEverythingFromTable(databaseName + databaseTable);
         String SQL = mySQLQuery.semicolon().toString();
-        return Database.runSQL(SQL, emptyModel);
+        return MySQL.runSQL(SQL, emptyModel);
     }
 
 
@@ -27,6 +27,6 @@ public class GetAllRowsTask
         mySQLQuery.selectColumns(columnNames);
         mySQLQuery.fromTable(databaseName + databaseTable);
         String SQL = mySQLQuery.semicolon().toString();
-        return Database.runSQL(SQL, emptyModel);
+        return MySQL.runSQL(SQL, emptyModel);
     }
 }

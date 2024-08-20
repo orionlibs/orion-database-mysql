@@ -30,7 +30,6 @@ public class DatabaseUpdatesDAO
         }
         catch(DataAccessException e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
         }
     }
@@ -57,12 +56,10 @@ public class DatabaseUpdatesDAO
         }
         catch(DuplicateKeyException e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
         }
         catch(DataAccessException e)
         {
-            logErrorToConsole(e.getMessage());
             throw e;
         }
     }
@@ -90,7 +87,6 @@ public class DatabaseUpdatesDAO
         }
         catch(DataAccessException e1)
         {
-            logErrorToConsole(e1.getMessage());
             if(allowSequentialExecution)
             {
                 try
@@ -110,7 +106,6 @@ public class DatabaseUpdatesDAO
                 }
                 catch(DataAccessException e2)
                 {
-                    logErrorToConsole(e2.getMessage());
                     throw e2;
                 }
             }

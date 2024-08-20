@@ -1,11 +1,12 @@
 package io.github.orionlibs.orion_database_mysql.tasks;
 
-import com.orion.core.security.DataSecurityService;
-import com.orion.core.security.NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException;
 import io.github.orionlibs.orion_assert.Assert;
 import io.github.orionlibs.orion_database.OrionModel;
-import io.github.orionlibs.orion_database_mysql.Database;
+import io.github.orionlibs.orion_database_mysql.IgnoreForORM;
+import io.github.orionlibs.orion_database_mysql.MySQL;
 import io.github.orionlibs.orion_database_mysql.sql.mysql.MySQLQueryBuilderService;
+import io.github.orionlibs.orion_reflection.variable.access.ReflectionInstanceVariablesAccessService;
+import io.github.orionlibs.orion_reflection.variable.retrieval.ReflectionInstanceVariablesRetrievalService;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +18,13 @@ public class SaveModelTask
         Assert.notNull(model, "The given model is null.");
         Assert.notEmpty(databaseTable, "The given databaseTable is null/empty.");
         Assert.notEmpty(columnsToSave, "The given columnsToSave is null/empty.");
-        OrionModel modelCopy = model.getCopy();
-        try
-        {
-            DataSecurityService.encryptObject(modelCopy);
-        }
-        catch(NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException e)
-        {
-            //
-        }
         MySQLQueryBuilderService mySQLQuery = new MySQLQueryBuilderService();
         mySQLQuery.insertIntoTable(databaseName + databaseTable);
         mySQLQuery.parenthesisedCommaSeparatedColumns(columnsToSave);
         mySQLQuery.valuesOfParenthesisedCommaSeparatedQuestionMarks();
-        mySQLQuery.buildParametersArray(modelCopy);
+        mySQLQuery.buildParametersArray(model);
         String SQL = mySQLQuery.semicolon().toString();
-        return Database.runSQL(SQL, mySQLQuery.getParameters());
+        return MySQL.runSQL(SQL, mySQLQuery.getParameters());
     }
 
 
@@ -40,19 +32,10 @@ public class SaveModelTask
     {
         Assert.notNull(model, "The given model is null.");
         Assert.notEmpty(databaseTable, "The given databaseTable is null/empty.");
-        OrionModel modelCopy = model.getCopy();
-        try
-        {
-            DataSecurityService.encryptObject(modelCopy);
-        }
-        catch(NoEncodingAndEncryptionAlgorithmsForUsernameProvidedException e)
-        {
-            //
-        }
         MySQLQueryBuilderService mySQLQuery = new MySQLQueryBuilderService();
         mySQLQuery.insertIntoTable(databaseName + databaseTable);
         List<String> columnsToSave = new ArrayList<>();
-        List<Field> privateInstanceVariables = ReflectionInstanceVariablesRetrievalService.getAllPrivateInstanceVariables(modelCopy);
+        List<Field> privateInstanceVariables = ReflectionInstanceVariablesRetrievalService.getAllPrivateInstanceVariables(model);
         for(Field field : privateInstanceVariables)
         {
             ReflectionInstanceVariablesAccessService.makeInstanceVariableAccessible(field);
@@ -64,8 +47,8 @@ public class SaveModelTask
         }
         mySQLQuery.parenthesisedCommaSeparatedColumns(columnsToSave);
         mySQLQuery.valuesOfParenthesisedCommaSeparatedQuestionMarks();
-        mySQLQuery.buildParametersArray(modelCopy);
+        mySQLQuery.buildParametersArray(model);
         String SQL = mySQLQuery.semicolon().toString();
-        return Database.runSQL(SQL, mySQLQuery.getParameters());
+        return MySQL.runSQL(SQL, mySQLQuery.getParameters());
     }
 }
