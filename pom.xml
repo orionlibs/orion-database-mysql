@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.orionlibs</groupId>
     <artifactId>orion-database-mysql</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>Orion Database MySQL</name>
     <description>Java MySQL functionality</description>
     <url>https://github.com/orionlibs/orion-database-mysql</url>
@@ -251,7 +251,7 @@
         <dependency>
             <groupId>io.github.orionlibs</groupId>
             <artifactId>orion-reflection</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
 
 
